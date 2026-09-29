@@ -1,6 +1,6 @@
 # Job-Shop-Tabu-Search – Streamlit-Demo
 
-**[→ Demo live ausprobieren](#) (Deploy offen)**
+**[→ Demo live ausprobieren](https://sebastianhanisch-job-shop-tabu-demo.streamlit.app/)**
 
 Zehntes Stück der **Klassische-Scheduling-Theorie-Linie** der "Konzepte"-Reihe für die Website "Sebastian Hanisch
 – Operations Research und Machine Learning", das zweite SOTA-Stück: dasselbe Job-Shop-Modell wie Stück 8/9, aber
