@@ -20,8 +20,7 @@ allerersten Blocks und das letzte Paar des allerletzten Blocks werden NICHT vert
 beweisbar nicht verbessern). Eine winzige, gezielte Nachbarschaft im Vergleich zur vollen paarweisen Nachbarschaft
 der Schwester-Demo `tabu-search-demo` (Trajektorien-Metaheuristiken-Linie, TSP).
 
-Ergebnis in Kürze: bei 10 Aufträgen auf 4 Maschinen (Standard-Seed) verbessert Tabu Search den MWKR-Start um
-**18,7 %**. Über die feste Messreihe (5 Instanzen) hilft die Suche im Mittel **7,9 %**. **Der überraschendste
+Ergebnis in Kürze: bei 10 Aufträgen auf 4 Maschinen (Standard-Seed) liegt der MWKR-Start **18,7 %** über Tabu Search (Cmax 706 gegenüber 595, Tabu Search verkürzt Cmax also um 15,7 %). Über die feste Messreihe (5 Instanzen) liegt der MWKR-Start im Mittel **7,9 %** über Tabu Search (Abstand wie in der App: auf Tabu Search bezogen). **Der überraschendste
 Befund dieses Stücks**: zählt ein besserer Start (Shifting Bottleneck, Stück 9) gegenüber dem naiven MWKR-Start
 (Stück 8) bei fester Budget-Grenze? Gemessen NICHT bestätigt - bei den meisten Instanzen konvergieren beide Starts
 zum fast identischen Ergebnis (Gleichstand-Quote bis zu 100 %), teils sogar mit dem SCHLECHTEREN Start am Ende
@@ -30,8 +29,8 @@ stark zählt) - die N5-Nachbarschaft scheint robust genug, einen schwächeren St
 
 | Frage | Ergebnis (Mittel über 5 feste Instanzen, Seeds 100000–100004) |
 |---|---|
-| Standardfall (10 Aufträge, 4 Maschinen, Seed 60) | ✅ Tabu Search **18,7 %** unter dem MWKR-Start |
-| **Verbesserung im Mittel** | ✅ **+7,9 %** gegenüber dem MWKR-Start |
+| Standardfall (10 Aufträge, 4 Maschinen, Seed 60) | ✅ MWKR-Start **18,7 %** über Tabu Search (Cmax 706 → 595, also 15,7 % kürzer) |
+| **Abstand im Mittel** | ✅ MWKR-Start **+7,9 %** über Tabu Search |
 | **Zählt ein besserer Start (Shifting Bottleneck, Stück 9)?** | ❌ Kaum - Gleichstand-Quote bis zu 100 % |
 | **Tabu Search auf JEDER Instanz mindestens so gut wie der Start?** | ✅ Ja - bewiesen, nicht nur gemessen (siehe unten) |
 | **N5-Nachbarschaft bietet immer einen Zug?** | ❌ Nein - liegt der GESAMTE kritische Pfad auf einer Maschine, kein Zug möglich |

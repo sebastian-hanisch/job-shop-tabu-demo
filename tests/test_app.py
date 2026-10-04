@@ -53,7 +53,7 @@ def test_gap_mwkr_is_never_negative_by_construction():
     for seed in (2, 7, 42):
         at = _run(n_slider=6, m_slider=3, seed_input=seed, vehicle_radio="neutral")
         _ok(at)
-        assert not any(w for w in at.warning if "schneidet hier sogar schlechter ab" in w.value)
+        assert not any(w for w in at.warning if "Unerwartet: Tabu Search liegt hier über dem MWKR-Start" in w.value)
 
 
 @pytest.mark.parametrize("name", list(C.PRESETS))
