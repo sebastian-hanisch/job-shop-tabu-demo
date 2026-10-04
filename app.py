@@ -195,7 +195,7 @@ else:
     m3.metric("CP-SAT", f"erst ab n ≤ {C.EXACT_MAX_N}", delta_color="off", help="Bei dieser Größe wäre eine exakte Lösung des vollen Modells aussichtslos.")
 
 if a.gap_mwkr < 0:
-    st.warning(f"⚠️ Unerwartet: Tabu Search liegt hier über dem MWKR-Start ({abs(a.gap_mwkr):.1f} % mehr). Das darf nicht vorkommen - Tabu Search gibt immer die beste je gefundene Lösung zurück, also höchstens den Start selbst. Bitte als Fehler melden.")
+    st.warning(f"⚠️ Unerwartet: Tabu Search liegt hier über dem MWKR-Start (dessen Cmax liegt {abs(a.gap_mwkr):.1f} % unter dem von Tabu Search). Das darf nicht vorkommen - Tabu Search gibt immer die beste je gefundene Lösung zurück, also höchstens den Start selbst. Bitte als Fehler melden.")
 else:
     st.success(f"✅ Tabu Search ist besser als der MWKR-Start: dessen Cmax liegt {a.gap_mwkr:.1f} % darüber (Tabu Search verkürzt Cmax um {100 * a.gap_mwkr / (100 + a.gap_mwkr):.1f} %).")
 
