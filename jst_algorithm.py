@@ -11,7 +11,8 @@ Vier Bausteine:
 3. **N5-Nachbarschaft** (Nowicki & Smutnicki 1996, WebSearch-verifiziert): pro Block mit ≥2 Operationen wird NUR
    das ERSTE oder LETZTE Operationspaar vertauscht - mit einer Ausnahme aus der Originalarbeit: das erste Paar
    des ERSTEN Blocks und das letzte Paar des LETZTEN Blocks werden NICHT vertauscht (diese Züge können Cmax
-   beweisbar nicht verbessern). Eine winzige, gezielte Nachbarschaft im Vergleich zur vollen paarweisen
+   ohne Rüstzeiten beweisbar nicht verbessern; mit Rüstzeiten (Vehikel B) können sie es, deshalb entfällt die
+   Ausnahme dort - Orakel-Fund, siehe README). Eine winzige, gezielte Nachbarschaft im Vergleich zur vollen paarweisen
    Nachbarschaft der Schwester-Demo `tabu-search-demo` (Trajektorien-Metaheuristiken-Linie, TSP).
 4. **Tabu-Liste**: verhindert das sofortige Zurücktauschen eines gerade gemachten Zugs für `tenure` Iterationen,
    außer eine Aspiration (neues Gesamtoptimum) erlaubt es trotzdem. Sind ALLE Züge einer Iteration tabu, wird
@@ -257,10 +258,11 @@ def blocks_from_critical_path(routing, path):
     return blocks
 
 
-def n5_neighbors(routing, machine_seq, blocks):
+def n5_neighbors(routing, machine_seq, blocks, exclude_ends=True):
     """Nowicki & Smutnicki (1996): pro Block mit ≥2 Operationen das ERSTE oder LETZTE Paar tauschen - AUSSER dem
     ersten Paar des ERSTEN Blocks und dem letzten Paar des LETZTEN Blocks (literaturübliche Ausnahme, siehe
-    Moduldocstring)."""
+    Moduldocstring). `exclude_ends=False` lässt die Ausnahme weg: sie ist nur OHNE Rüstzeiten bewiesen (mit
+    Rüstzeiten kann ein Tausch am äußersten Paar Rüstzeit sparen und Cmax verkleinern - Orakel-Fund)."""
     moves = []
     for bi, block in enumerate(blocks):
         if len(block) < 2:
@@ -268,12 +270,12 @@ def n5_neighbors(routing, machine_seq, blocks):
         k = routing[block[0][0], block[0][1]]
         seq = machine_seq[k]
         idx0 = seq.index(block[0])
-        if bi != 0:
+        if bi != 0 or not exclude_ends:
             new_seq = list(seq)
             i = idx0
             new_seq[i], new_seq[i + 1] = new_seq[i + 1], new_seq[i]
             moves.append((k, new_seq))
-        if bi != len(blocks) - 1:
+        if bi != len(blocks) - 1 or not exclude_ends:
             new_seq = list(seq)
             i = idx0 + len(block) - 2
             new_seq[i], new_seq[i + 1] = new_seq[i + 1], new_seq[i]
@@ -304,7 +306,7 @@ def tabu_search(routing, proc, start0, end0, max_iters=200, tenure=8, family=Non
     for it in range(max_iters):
         path = critical_path(routing, proc, cur_start, cur_end, family, setup)
         blocks = blocks_from_critical_path(routing, path)
-        moves = n5_neighbors(routing, machine_seq, blocks)
+        moves = n5_neighbors(routing, machine_seq, blocks, exclude_ends=(family is None or not np.any(setup)))
         if not moves:
             break
         cand_best = None       # bester Zug UNTER Beachtung der Tabu-Liste (außer Aspiration)

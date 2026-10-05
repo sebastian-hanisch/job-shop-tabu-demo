@@ -79,8 +79,8 @@ with st.expander("So funktioniert Tabu Search mit der N5-Nachbarschaft", expande
    "straff" (Nachfolger beginnt GENAU dann, wenn Vorgänger endet, plus Rüstzeit auf dem Werkstatt-Vehikel).
 2. **In Blöcke zerlegen.** Maximale Teilfolgen des kritischen Pfads, die auf DERSELBEN Maschine liegen.
 3. **N5-Züge bilden.** Pro Block mit ≥2 Operationen das ERSTE oder LETZTE Paar vertauschen - AUSSER dem ersten
-   Paar des allerersten Blocks und dem letzten Paar des allerletzten Blocks (diese können Cmax beweisbar nicht
-   verbessern, Nowicki & Smutnicki 1996).
+   Paar des allerersten Blocks und dem letzten Paar des allerletzten Blocks (diese können Cmax ohne Rüstzeiten
+   beweisbar nicht verbessern, Nowicki & Smutnicki 1996; mit Rüstzeit auf dem Werkstatt-Vehikel entfällt die Ausnahme).
 4. **Besten erlaubten Zug wählen.** Tabu-Züge werden übersprungen, AUSSER eine Aspiration (neues Gesamtoptimum)
    erlaubt es trotzdem - sind wirklich alle Züge tabu, wird der am wenigsten schlechte trotzdem gemacht.
 5. **Wiederholen**, bis das Budget erschöpft ist. Die BESTE je gefundene Lösung zählt, nicht die letzte.
@@ -255,7 +255,7 @@ st.markdown(
     """
 | Annahme | Was passiert, wenn sie verletzt ist | Wer setzt an |
 |---|---|---|
-| **Die N5-Nachbarschaft findet immer einen Zug** | Liegt der GESAMTE kritische Pfad auf EINER Maschine (ein einziger Block), bietet N5 nach der literaturüblichen Ausnahmeregel KEINEN Zug an - die Suche steht sofort still. | Kein direkter Nachfolger in dieser Linie |
+| **Die N5-Nachbarschaft findet immer einen Zug** | Liegt der GESAMTE kritische Pfad auf EINER Maschine (ein einziger Block), bietet N5 nach der literaturüblichen Ausnahmeregel (Vehikel Neutral, Werkstatt ohne Rüstzeit) KEINEN Zug an - die Suche steht sofort still. | Kein direkter Nachfolger in dieser Linie |
 | **Ein besserer Start hilft immer** | Gemessen NICHT bestätigt (siehe 🔬 oben) - MWKR- und Shifting-Bottleneck-Start konvergieren bei diesem Budget fast immer zum selben Ergebnis. | Kein direkter Nachfolger in dieser Linie |
 | **Eine feste Startlösung reicht** | Für sehr harte Instanzen kombinieren professionelle Löser mehrere Startlösungen oder Neustarts. | **RCPSP** (letztes Stück, wachsender Endpunkt) |
 """
@@ -280,7 +280,7 @@ straff ist: $\text{start}(\text{Nachfolger}) = \text{end}(\text{Vorgänger})$ (p
 
 **N5-Nachbarschaft** (Nowicki & Smutnicki 1996). Für jeden Block $B$ mit $|B| \geq 2$: vertausche die ersten
 beiden ODER die letzten beiden Operationen - außer beim ersten Paar des ERSTEN Blocks und beim letzten Paar des
-LETZTEN Blocks (diese Züge können $C_{\max}$ beweisbar nicht verkleinern).
+LETZTEN Blocks (diese Züge können $C_{\max}$ ohne Rüstzeiten beweisbar nicht verkleinern; bei Vehikel B mit Rüstzeit werden sie mit angeboten).
 
 **Tabu-Liste.** Ein Zug $(k, \text{neue Reihenfolge})$ ist für `tenure` Runden gesperrt, nachdem er gemacht wurde
 - außer eine Aspiration (neues Gesamtoptimum) erlaubt ihn trotzdem.

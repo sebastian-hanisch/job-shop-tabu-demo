@@ -17,7 +17,7 @@ Auf dem **kritischen Pfad** (dem Weg ohne jeden Puffer) wird in **Blöcke** zerl
 derselben Maschine); pro Block wird nur das ERSTE oder LETZTE Operationspaar vertauscht (**N5-Nachbarschaft**,
 Nowicki & Smutnicki 1996, WebSearch-verifiziert) - mit einer Ausnahme aus der Originalarbeit: das erste Paar des
 allerersten Blocks und das letzte Paar des allerletzten Blocks werden NICHT vertauscht (diese Züge können Cmax
-beweisbar nicht verbessern). Eine winzige, gezielte Nachbarschaft im Vergleich zur vollen paarweisen Nachbarschaft
+ohne Rüstzeiten beweisbar nicht verbessern; auf dem Werkstatt-Vehikel mit Rüstzeit entfällt die Ausnahme, siehe unten). Eine winzige, gezielte Nachbarschaft im Vergleich zur vollen paarweisen Nachbarschaft
 der Schwester-Demo `tabu-search-demo` (Trajektorien-Metaheuristiken-Linie, TSP).
 
 Ergebnis in Kürze: bei 10 Aufträgen auf 4 Maschinen (Standard-Seed) liegt der MWKR-Start **18,7 %** über Tabu Search (Cmax 706 gegenüber 595, Tabu Search verkürzt Cmax also um 15,7 %). Über die feste Messreihe (5 Instanzen) liegt der MWKR-Start im Mittel **7,9 %** über Tabu Search (Abstand wie in der App: auf Tabu Search bezogen). **Der überraschendste
@@ -70,7 +70,7 @@ Rüstzeit und Anzahl Familien), Seed der Instanz (+ 🎲), **Budget (Iterationen
   entlang straffer Vorgänger-Kanten (Auftragsvorrang ODER Maschinenreihenfolge), dann Zerlegung in maximale
   Teilfolgen auf derselben Maschine.
 - **N5-Nachbarschaft** (`jst_algorithm.n5_neighbors`): pro Block das erste/letzte Paar - mit der literaturüblichen
-  Ausnahme an den beiden äußersten Blöcken.
+  Ausnahme an den beiden äußersten Blöcken (nur ohne Rüstzeit; mit Rüstzeit entfällt sie).
 - **Tabu-Search-Hauptschleife** (`jst_algorithm.tabu_search`): bester erlaubter Zug je Runde (Aspiration erlaubt
   Ausnahmen), Rückfall auf den am wenigsten schlechten TABU-Zug, falls wirklich alle gesperrt sind (echter Fund,
   siehe unten). Gibt die BESTE je gefundene Lösung zurück.
@@ -97,8 +97,15 @@ Rüstzeit und Anzahl Familien), Seed der Instanz (+ 🎲), **Budget (Iterationen
   N5-Nachbarschaft mächtig genug, einen schwächeren Start bei diesem Budget selbst auszugleichen.
 - **Die N5-Nachbarschaft bietet nicht immer einen Zug.** Liegt der GESAMTE kritische Pfad auf EINER Maschine (ein
   einziger Block), greift die Ausnahmeregel an BEIDEN Enden gleichzeitig (erster UND letzter Block zugleich) -
-  kein einziger Zug ist erlaubt. Kein Fehler, ein dokumentierter Grenzfall der Nachbarschaft selbst
+  kein einziger Zug ist erlaubt (Vehikel Neutral, und Werkstatt mit Rüstzeit 0). Kein Fehler, ein dokumentierter Grenzfall der Nachbarschaft selbst
   (`test_single_critical_block_offers_zero_moves`).
+- **Die N5-Ausnahme gilt nur ohne Rüstzeiten (Orakel-Fund).** Die Aussage, das erste Paar des ersten und das letzte Paar des
+  letzten Blocks könnten Cmax nicht verbessern, ist ein Satz über Job Shops OHNE Rüstzeiten. Eine Vollaufzählung der
+  ausgeschlossenen Züge auf zufälligen Startlösungen: Neutral 0 von 178 verbessern Cmax, Werkstatt/Logistik (Rüstzeit 5 bis 60)
+  23 von 218, weil ein Tausch am Rand Rüstzeit sparen kann. Auf dem Werkstatt-Vehikel mit Rüstzeit größer 0 bietet N5 deshalb auch
+  diese Züge an (bei Rüstzeit 0 bleibt es exakt das neutrale Vehikel). Beispiel: 3 Aufträge, 2 Maschinen, Seed 63, 3 Familien, Rüstzeit 15: die
+  Startlösung hat einen einzigen kritischen Block, die Ausnahmeregel ließ Tabu Search bei 212 stehen, das Optimum ist 197.
+  Regressionstest: `test_n5_end_pairs_are_offered_with_setup_times`.
 - **Tabu Search verschlechtert die Startlösung nie** - anders als Stück 7-9 dieser Linie (LPT/MWKR/Shifting
   Bottleneck können auf einzelnen Instanzen schlechter abschneiden als ihre Vergleichsregel) ist das hier eine
   BEWIESENE Garantie: die Funktion gibt immer die beste je gefundene Lösung zurück, im schlimmsten Fall also die
